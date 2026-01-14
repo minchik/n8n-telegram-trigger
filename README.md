@@ -46,16 +46,32 @@ ALLOWED_USERS=123456789,987654321
 
 ## Usage
 
-1. Start the bot:
+### With existing n8n instance
+
+1. Make sure your n8n is running on the `n8n-network` Docker network
+
+2. Start the bot:
    ```bash
-   docker-compose up -d --build
+   docker compose up -d --build
    ```
 
-2. Send `/id` to the bot to get your Telegram user ID
+### Standalone deployment (n8n + bot together)
 
-3. Add your user ID to `ALLOWED_USERS` and restart
+Use the combined compose file to run both n8n and the bot:
 
-4. Messages from allowed users will be forwarded to your n8n webhook
+```bash
+docker compose -f docker-compose.n8n.yml up -d --build
+```
+
+n8n will be available at `http://localhost:5678`.
+
+### Getting started
+
+1. Send `/id` to the bot to get your Telegram user ID
+
+2. Add your user ID to `ALLOWED_USERS` and restart
+
+3. Messages from allowed users will be forwarded to your n8n webhook
 
 ## License
 

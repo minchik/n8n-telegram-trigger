@@ -1,0 +1,31 @@
+services:
+  n8n:
+    image: n8nio/n8n:next
+    container_name: n8n
+    restart: unless-stopped
+    volumes:
+      - /opt/n8n:/home/node/.n8n
+    networks:
+      - n8n-network
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_RUNNERS_ENABLED=true
+
+  n8n-telegram-trigger:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: n8n-telegram-trigger:latest
+    container_name: n8n-telegram-trigger
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - n8n-network
+    depends_on:
+      - n8n
+
+networks:
+  n8n-network:
+    name: n8n-network
