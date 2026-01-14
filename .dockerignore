@@ -1,0 +1,11 @@
+.env
+.env.example
+.git
+.github
+.gitignore
+.idea
+*.md
+LICENSE
+docker-compose.yml
+Dockerfile
+*.png
