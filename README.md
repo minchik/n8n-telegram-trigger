@@ -48,9 +48,14 @@ ALLOWED_USERS=123456789,987654321
 
 ### With existing n8n instance
 
-1. Make sure your n8n is running on the `n8n-network` Docker network
+1. Find your n8n container's networks:
+   ```bash
+   docker inspect n8n --format '{{range $k, $v := .NetworkSettings.Networks}}{{$k}}{{"\n"}}{{end}}'
+   ```
 
-2. Start the bot:
+2. Update `docker-compose.yml` to use the same network name
+
+3. Start the bot:
    ```bash
    docker compose up -d --build
    ```
