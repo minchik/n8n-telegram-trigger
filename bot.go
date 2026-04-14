@@ -25,6 +25,7 @@ type TGBot struct {
 	Token        string
 	AllowedUsers []string
 	client       *http.Client
+	bot          *bot.Bot
 }
 
 func NewBot(token, n8nWebhook string, allowedUsers []string) *TGBot {
@@ -48,9 +49,19 @@ func (tg *TGBot) Start(ctx context.Context) {
 		slog.Error("Failed to create telegram bot", "error", err)
 		os.Exit(1)
 	}
+	tg.bot = b
 
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/id", bot.MatchTypeExact, tg.idHandler)
 	b.Start(ctx)
+}
+
+func (tg *TGBot) NotifyUser(ctx context.Context, user int64) error {
+	_, err := tg.bot.SendChatAction(ctx, &bot.SendChatActionParams{
+		ChatID: user,
+		Action: models.ChatActionTyping,
+	})
+
+	return err
 }
 
 func (tg *TGBot) handler(ctx context.Context, _ *bot.Bot, update *models.Update) {
@@ -64,6 +75,8 @@ func (tg *TGBot) handler(ctx context.Context, _ *bot.Bot, update *models.Update)
 		slog.Info("User not allowed", "user", from)
 		return
 	}
+
+	_ = tg.NotifyUser(ctx, from)
 
 	body, err := json.Marshal(update)
 	if err != nil {
